@@ -1,0 +1,105 @@
+{
+  "name": "news-hub-automation",
+  "description": "AI News Reels Generator with Oggy & Jack - Auto-posts to YouTube, Instagram, Twitter, Facebook",
+  "plugins": {
+    "python": {
+      "enabled": true,
+      "version": "3.12"
+    }
+  },
+  "variables": {
+    "GROQ_API_KEY": "",
+    "USE_OLLAMA": "false",
+    "OLLAMA_MODEL": "llama3:8b-instruct",
+    "YOUTUBE_CLIENT_ID": "",
+    "YOUTUBE_CLIENT_SECRET": "",
+    "YOUTUBE_ACCESS_TOKEN": "",
+    "YOUTUBE_REFRESH_TOKEN": "",
+    "TWITTER_API_KEY": "",
+    "TWITTER_API_SECRET": "",
+    "TWITTER_ACCESS_TOKEN": "",
+    "TWITTER_ACCESS_TOKEN_SECRET": "",
+    "INSTAGRAM_USERNAME": "",
+    "INSTAGRAM_PASSWORD": "",
+    "FACEBOOK_PAGE_ID": "",
+    "FACEBOOK_ACCESS_TOKEN": "",
+    "REELS_PER_DAY": "3",
+    "REEL_SCHEDULE_TIMES": "08:00,14:00,19:00",
+    "TIMEZONE": "Asia/Kolkata"
+  },
+  "services": [
+    {
+      "name": "news-hub-scheduler",
+      "type": "worker",
+      "startCommand": "python -m news_hub.scheduler",
+      "healthcheckPath": "/health",
+      "healthcheckTimeout": 30,
+      "restartPolicy": {
+        "type": "onFailure",
+        "maxRetries": 5
+      },
+      "env": {
+        "RAILWAY_SERVICE": "scheduler"
+      }
+    },
+    {
+      "name": "news-hub-api",
+      "type": "web",
+      "startCommand": "python deploy/dashboard.py",
+      "port": 8000,
+      "healthcheckPath": "/health",
+      "healthcheckTimeout": 10,
+      "restartPolicy": {
+        "type": "onFailure",
+        "maxRetries": 3
+      },
+      "env": {
+        "RAILWAY_SERVICE": "api"
+      }
+    }
+  ],
+  "triggers": {
+    "cron": [
+      {
+        "name": "daily-reels",
+        "cron": "0 8,14,19 * * *",
+        "service": "news-hub-scheduler",
+        "command": "python -m news_hub.main --count 1"
+      }
+    ]
+  },
+  "storage": {
+    "volumes": [
+      {
+        "name": "output",
+        "path": "/app/output",
+        "persist": true
+      },
+      {
+        "name": "logs",
+        "path": "/app/logs",
+        "persist": true
+      }
+    ]
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": [
+      "cpu",
+      "memory",
+      "storage",
+      "network"
+    ]
+  },
+  "notifications": {
+    "slack": {
+      "enabled": false,
+      "webhookUrl": ""
+    },
+    "email": {
+      "enabled": true,
+      "onFailure": true,
+      "onSuccess": false
+    }
+  }
+}

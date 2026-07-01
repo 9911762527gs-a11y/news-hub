@@ -1,0 +1,44 @@
+[project]
+name = "news-hub"
+version = "0.1.0"
+description = "AI-generated news shorts with Oggy & Jack — auto-posted to YouTube, X, Instagram, Facebook"
+requires-python = ">=3.12"
+dependencies = [
+    "feedparser>=6.0",
+    "requests>=2.32",
+    "python-dotenv>=1.1",
+    "edge-tts>=7.0",
+    "moviepy>=2.0",
+    "pillow>=11.0",
+    "schedule>=1.2",
+    "tweepy>=4.14",
+    "google-api-python-client>=2.150",
+    "google-auth-oauthlib>=1.2",
+    "google-auth-httplib2>=0.2",
+    "aiohttp>=3.11",
+    "groq>=0.5.0",  # Free AI API (30K tokens/day free)
+    "instaloader>=4.10",  # Free Instagram upload (unofficial)
+    "flask>=3.0",  # For business dashboard
+]
+
+[project.scripts]
+news-hub = "news_hub.main:main"
+news-hub-scheduler = "news_hub.scheduler:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"

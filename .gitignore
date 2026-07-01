@@ -1,0 +1,70 @@
+# AI keys
+.env
+.env.local
+.env.*.local
+
+# Output
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OAuth tokens
+*.token
+credentials.json
+token.json
+client_secret.json
+
+# Assets (generated)
+assets/characters/*.png
+assets/backgrounds/*.jpg
+assets/backgrounds/*.png
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+
+# Video files
+*.mp4
+*.wav
+*.mp3
+
+# Dependencies
+pip-log.txt
+pip-delete-this-directory.txt
