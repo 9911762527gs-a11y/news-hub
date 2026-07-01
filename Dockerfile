@@ -16,6 +16,8 @@ WORKDIR /app
 # Install system dependencies FIRST (critical for edge-tts and moviepy)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
+    gnupg \
+    curl \
     ca-certificates \
     fonts-liberation \
     libasound2 \
@@ -40,9 +42,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Microsoft Edge for Edge TTS (required)
-RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add - && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" | tee /etc/apt/sources.list.d/microsoft-edge.list && \
-    apt-get update && \
+# Using modern approach without deprecated apt-key
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft-archive-keyring.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list \
+    && apt-get update && \
     apt-get install -y --no-install-recommends microsoft-edge-stable && \
     rm -rf /var/lib/apt/lists/*
 
